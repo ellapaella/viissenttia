@@ -5,3 +5,14 @@ class Refrence:
 
     def __str__(self):
         pass
+
+
+class Article:
+    def __init__(self,author,title,journal,year,volume,number,pages):
+        self.author=author
+        self.title=title
+        self.journal=journal
+        self.year=year
+        self.volume=volume
+        self.number=number
+        self.pages=pages

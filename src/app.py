@@ -3,6 +3,7 @@ from db_helper import reset_db
 from repositories.todo_repository import get_todos, create_todo, set_done
 from config import app, test_env
 from util import validate_todo
+import entities.citation_styles as citation_styles
 
 @app.route("/")
 def index():
@@ -30,6 +31,14 @@ def todo_creation():
 def toggle_todo(todo_id):
     set_done(todo_id)
     return redirect("/")
+
+@app.route("/add_citation")
+def add():
+    return render_template("add_citation.html")
+
+@app.route("/view_citations")
+def view():
+    return render_template("view_citations.html")
 
 # testausta varten oleva reitti
 if test_env:
