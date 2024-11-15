@@ -1,48 +1,39 @@
-from flask import redirect, render_template, request, jsonify, flash
-from db_helper import reset_db
-from repositories.todo_repository import get_todos, create_todo, set_done
-from config import app, test_env
-from util import validate_todo
-import entities.citation_styles as citation_styles
+from flask import redirect, render_template, request, flash
+from repositories.citation_repository import get_citations, create_citation
+from config import app
+from util import citation_form_to_class
+
 
 @app.route("/")
 def index():
-    todos = get_todos()
-    unfinished = len([todo for todo in todos if not todo.done])
-    return render_template("index.html", todos=todos, unfinished=unfinished) 
+    return render_template("index.html")
 
-@app.route("/new_todo")
-def new():
-    return render_template("new_todo.html")
 
-@app.route("/create_todo", methods=["POST"])
-def todo_creation():
-    content = request.form.get("content")
+@app.route("/add_citation", methods=["POST"])
+def add_citation():
+    # Code for displaying add_citation page
+    if request.method == "GET":
+        return render_template("add_citation.html")
+    
+    # Code for handling citation form
+    if request.method == "POST":
+        
+        # Turn citation form into a citation class
+        citation_class = citation_form_to_class(request.form)
+        if not citation_class:
+            flash(f"Citation type {request.form.get("type")} not found.")
+            return redirect("/add_citation")
+        
+        # Attempt to create citation and then display result
+        result = create_citation(citation_class)
+        if result.get("success"):
+            flash("Successfully added citation.")
+            return redirect("/")
+        flash(result.get("error", "Failed to add citation. Please try again later."), "error")
+        return redirect("/add_citation")
 
-    try:
-        validate_todo(content)
-        create_todo(content)
-        return redirect("/")
-    except Exception as error:
-        flash(str(error))
-        return  redirect("/new_todo")
-
-@app.route("/toggle_todo/<todo_id>", methods=["POST"])
-def toggle_todo(todo_id):
-    set_done(todo_id)
-    return redirect("/")
-
-@app.route("/add_citation")
-def add():
-    return render_template("add_citation.html")
 
 @app.route("/view_citations")
 def view():
-    return render_template("view_citations.html")
-
-# testausta varten oleva reitti
-if test_env:
-    @app.route("/reset_db")
-    def reset_database():
-        reset_db()
-        return jsonify({ 'message': "db reset" })
+    citations = get_citations()
+    return render_template("view_citations.html", citations=citations)
