@@ -9,7 +9,7 @@ def get_citations():
     return [Todo(todo[0], todo[1], todo[2]) for todo in todos]  """
     return None # I left the boilerplate commented for copy pasting but return a list of citation objects
 
-def create_citation(content):
+def create_citation(citation_class):
     """ sql = text("INSERT INTO todos (content) VALUES (:content)")
     db.session.execute(sql, { "content": content })
     db.session.commit() """
