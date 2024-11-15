@@ -1,7 +1,7 @@
 from config import db
 from sqlalchemy import text
 
-from entities.refrence import Refrence
+from entities.citation import Article
 
 def get_refrences():
     """ result = db.session.execute(text("SELECT id, content, done FROM todos"))
